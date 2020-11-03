@@ -40,9 +40,9 @@ const signin = () => {
 
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => navigation.navigate('MapScreen')}>
-            <Text style={{ fontSize: 30}}>Sign in Now</Text>
-        </TouchableOpacity>
+        
+            <Text style={{ fontSize: 30}}>Loading </Text>
+  
       </View>
     );
 

@@ -26,9 +26,20 @@ const mapScreen = ({ route, navigation }) => {
   
 
   useEffect(() => {
+    
     console.log(latitude);
     console.log(longitude);
-    getdirection(destinations);
+    getdirection(destinations)
+    .then((data) => {
+      console.log(data);
+      setArray(data);
+      getArray(data);
+      
+    })
+    // .then((data) => {
+    //   console.log(data)
+    //   getArray(data);
+    // })
   }, []);
 
 
@@ -39,40 +50,45 @@ const mapScreen = ({ route, navigation }) => {
 
     const getdirection = async (destinations) => {
       let all_location = [];
-      destinations.forEach(item => {
+     await Promise.all(destinations.map(async (item)  =>  {
         console.log("Calling for each function")
         const DIRECTION_API_KEY = 'pk.eyJ1Ijoia2hhbmhhc3NhbjA1NyIsImEiOiJjazUxOXk3ZTMwYWd0M3Ntcm84b21tejN4In0.Xb6l-yJHO6_1RQe0uzwnyg';
-          axios.get(`https://api.mapbox.com/directions/v5/mapbox/driving/${longitude},${latitude};${item.long},${item.lat}?geometries=geojson&steps=true&access_token=${DIRECTION_API_KEY}`)
-          .then((data) => 
-          all_location.push({ "distance" : data.data.routes[0].distance, "Fridge_id": item.id, "Address" : item.add})
-          //  console.log(data.data.routes[0].distance)    
-          )      
+        const data = await axios.get(`https://api.mapbox.com/directions/v5/mapbox/driving/${longitude},${latitude};${item.long},${item.lat}?geometries=geojson&steps=true&access_token=${DIRECTION_API_KEY}`)
+       
+        all_location.push({ "distance" : data.data.routes[0].distance, "Fridge_id": item.id, "Address" : item.add})
+       
+        // console.log(data.data.routes[0].distance);
+            
       })
-
+     )
+     
+    
+ 
+      // setArray(all_location);
+      // getArray();
+      return all_location;
 
   }
 
-const getArray = () => {
+const getArray = (array) => {
+
+  let two_array = [];
   
   console.log('Button')
 
-  if(array) {
-    setArray(array.sort(function(a, b) {
+  if(array.length !== null) {
+  two_array = array.sort(function(a, b) {
       return a.distance - b.distance;
-    }))
+    })
   }
   else {
     console.log("No Array")
   }
-
-      setNearestFridge(array[0]);
-
-      console.log(nearestFridge);
-      // setFridgeDistance(((nearestFridge.distance)/1000).toFixed(2));
-      console.log(fridgeDistance);
-      
-   
-  
+  console.log(two_array[0])
+      setNearestFridge(two_array[0]);
+      // console.log(nearestFridge);
+      // // setFridgeDistance(((nearestFridge.distance)/1000).toFixed(2));
+      // console.log(fridgeDistance);  
     
 }
 
